@@ -1,6 +1,34 @@
 import random
 
 OPTIONS = ("камень", "ножницы", "бумага")
+RESULTS_FILE = "results.txt"
+
+
+class ScoreBoard:
+    """Подсчёт очков: победы игрока и компьютера."""
+
+    def __init__(self):
+        self.player_wins = 0
+        self.computer_wins = 0
+
+    def update(self, result):
+        """Обновляет счёт по результату раунда.
+
+        result: 'player', 'computer' или 'draw'
+        """
+        if result == "player":
+            self.player_wins += 1
+        elif result == "computer":
+            self.computer_wins += 1
+
+    def display(self):
+        """Показывает текущий счёт."""
+        print(f"Счёт — Вы: {self.player_wins} | Компьютер: {self.computer_wins}")
+
+    def save(self, filename=RESULTS_FILE):
+        """Сохраняет результаты в файл."""
+        with open(filename, "a", encoding="utf-8") as f:
+            f.write(f"Игра окончена. Счёт — Вы: {self.player_wins} | Компьютер: {self.computer_wins}\n")
 
 
 def get_computer_choice():
@@ -40,6 +68,8 @@ def determine_winner(player, computer):
 def main():
     """Основной игровой цикл."""
     print("=== Камень - Ножницы - Бумага ===")
+    board = ScoreBoard()
+
     while True:
         player = get_player_choice()
         if player is None:
@@ -55,8 +85,13 @@ def main():
             print("Вы выиграли!")
         else:
             print("Компьютер выиграл!")
+
+        board.update(result)
+        board.display()
         print()
 
+    board.save()
+    print(f"Счёт сохранён в файл {RESULTS_FILE}")
     print("Игра окончена!")
 
 
